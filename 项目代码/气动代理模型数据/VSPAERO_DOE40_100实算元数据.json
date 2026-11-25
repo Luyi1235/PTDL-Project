@@ -1,0 +1,63 @@
+{
+  "created_at": "2026-10-06T15:08:52",
+  "method": "nested maximin DOE; all new responses computed using the OpenVSP Python runtime and VSPAERO",
+  "source_file": "D:\\LDTP\\LDTP\\PTDL飞推控协同优化代码包\\气动代理模型数据\\VSPAERO_DOE扩充样本_23点.csv",
+  "source_point_count": 23,
+  "baseline_point_count": 40,
+  "expanded_point_count": 100,
+  "new_successful_vspaero_solves": 77,
+  "failed_attempts_excluded_from_training": 15,
+  "attempt_count": 92,
+  "seed": 20261006,
+  "feature_bounds": {
+    "wing_area_m2": [
+      22.75810019142496,
+      39.74787195095952
+    ],
+    "aspect_ratio": [
+      18.601168960018807,
+      31.0
+    ],
+    "taper_ratio": [
+      0.3169885485142994,
+      0.6740918868180807
+    ],
+    "sweep_deg": [
+      0.0697302511721392,
+      7.576839794755455
+    ],
+    "tip_twist_deg": [
+      -2.9765630073645384,
+      1.461224632123452
+    ],
+    "fuselage_length_m": [
+      7.536850435642791,
+      9.915171352632598
+    ],
+    "fuselage_diameter_m": [
+      0.65,
+      0.9338403467285128
+    ]
+  },
+  "quality_scope": "VSPAERO VLM labels CL_alpha and Oswald efficiency; parasite drag remains in the separate low-order buildup.",
+  "usable_polar_response_limits": {
+    "CL_alpha_per_rad": [
+      3.5,
+      8.5
+    ],
+    "oswald_efficiency": [
+      0.55,
+      1.4
+    ]
+  },
+  "replaced_unusable_rows": [
+    "doe_46",
+    "doe_55",
+    "doe_62",
+    "doe_99"
+  ],
+  "replacement_solves_accepted": 4,
+  "replacement_attempts": 6,
+  "failed_solver_attempts_during_replacement": 2,
+  "updated_at": "2026-10-06T15:24:08"
+}

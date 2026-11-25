@@ -1,0 +1,39 @@
+{
+  "created_at": "2026-10-06T17:50:32",
+  "target_definition": "median VSPAERO Ew for polar points with abs(CLiw) >= 0.15",
+  "model_family": "quadratic-basis ridge surrogate used by the PTDL optimizer",
+  "datasets": {
+    "40": {
+      "rows": 40,
+      "loo": {
+        "vspaero_cl_alpha_per_rad": {
+          "MAE": 0.052923932215903594,
+          "RMSE": 0.06695409638050015,
+          "R2": 0.77944044035505
+        },
+        "vspaero_oswald_efficiency": {
+          "MAE": 0.08229309375966565,
+          "RMSE": 0.10834724183184796,
+          "R2": 0.5442482839659915
+        }
+      }
+    },
+    "100": {
+      "rows": 100,
+      "loo": {
+        "vspaero_cl_alpha_per_rad": {
+          "MAE": 0.0621189380450547,
+          "RMSE": 0.08299670256868583,
+          "R2": 0.6224483363463694
+        },
+        "vspaero_oswald_efficiency": {
+          "MAE": 0.07367352636113983,
+          "RMSE": 0.09591065412631355,
+          "R2": 0.522701007980687
+        }
+      }
+    }
+  },
+  "mesh_warning_policy": "Reject any sample with PGFace Invalid or Faces have errors.",
+  "caveat": "VSPAERO VLM computational labels; not wind-tunnel or flight validation."
+}

@@ -1,0 +1,184 @@
+<?xml version="1.0"?>
+<fdm_config name="PTDL_EST_6DOF" version="2.0" release="BETA">
+  <fileheader>
+    <author>PTDL preliminary engineering model</author>
+    <filecreationdate>2026-10-04</filecreationdate>
+    <description>Estimated PTDL six-degree-of-freedom model, ULTRA-scale only</description>
+    <note>
+      Not an ULTRA aircraft model. Public ULTRA scale anchors are used only
+      for approximate geometry and mass. Aerodynamics, inertias, control
+      surfaces, actuator dynamics, and propulsion interface are estimates.
+      Not calibrated, certified, or validated for flight.
+    </note>
+  </fileheader>
+  <metrics>
+    <wingarea unit="M2">26.0</wingarea>
+    <wingspan unit="M">24.9936</wingspan>
+    <chord unit="M">1.0408</chord>
+    <htailarea unit="M2">2.71</htailarea>
+    <htailarm unit="M">4.36</htailarm>
+    <vtailarea unit="M2">1.95</vtailarea>
+    <vtailarm unit="M">4.36</vtailarm>
+    <location name="AERORP" unit="M"><x>0</x><y>0</y><z>0</z></location>
+    <location name="EYEPOINT" unit="M"><x>0</x><y>0</y><z>0</z></location>
+    <location name="VRP" unit="M"><x>0</x><y>0</y><z>0</z></location>
+  </metrics>
+  <mass_balance>
+    <ixx unit="KG*M2">42520</ixx>
+    <iyy unit="KG*M2">9710</iyy>
+    <izz unit="KG*M2">52230</izz>
+    <ixy unit="KG*M2">0</ixy><ixz unit="KG*M2">0</ixz><iyz unit="KG*M2">0</iyz>
+    <emptywt unit="KG">870.19</emptywt>
+    <location name="CG" unit="M"><x>0</x><y>0</y><z>0</z></location>
+  </mass_balance>
+  <ground_reactions>
+    <contact type="BOGEY" name="REFERENCE_GEAR">
+      <location unit="M"><x>0</x><y>0</y><z>2</z></location>
+      <static_friction>0.5</static_friction>
+      <dynamic_friction>0.3</dynamic_friction>
+      <rolling_friction>0.02</rolling_friction>
+      <spring_coeff unit="N/M">80000</spring_coeff>
+      <damping_coeff unit="N/M/SEC">12000</damping_coeff>
+      <max_steer unit="DEG">0</max_steer>
+      <brake_group>NONE</brake_group>
+      <retractable>1</retractable>
+    </contact>
+  </ground_reactions>
+  <external_reactions>
+    <property>propulsion/ptdl-thrust-lbf</property>
+    <force name="PTDL_HYBRID_PROPULSION" frame="BODY">
+      <function><property>propulsion/ptdl-thrust-lbf</property></function>
+      <location unit="M"><x>0</x><y>0</y><z>0</z></location>
+      <direction><x>1</x><y>0</y><z>0</z></direction>
+    </force>
+  </external_reactions>
+  <propulsion>
+    <tank type="FUEL">
+      <location unit="M"><x>0</x><y>0</y><z>0</z></location>
+      <capacity unit="KG">490.59</capacity>
+      <contents unit="KG">490.59</contents>
+    </tank>
+  </propulsion>
+  <flight_control name="PTDL_EST_FCS">
+    <channel name="Pitch">
+      <lag_filter name="Elevator estimated actuator">
+        <input>fcs/elevator-cmd-norm</input><c1>4.0</c1>
+        <output>fcs/elevator-actuator-norm</output>
+      </lag_filter>
+      <aerosurface_scale name="Elevator travel">
+        <input>fcs/elevator-actuator-norm</input><gain>0.34906585040</gain>
+        <range><min>-0.34906585040</min><max>0.34906585040</max></range>
+        <output>fcs/elevator-pos-rad</output>
+      </aerosurface_scale>
+    </channel>
+    <channel name="Roll">
+      <lag_filter name="Aileron estimated actuator">
+        <input>fcs/aileron-cmd-norm</input><c1>5.0</c1>
+        <output>fcs/aileron-actuator-norm</output>
+      </lag_filter>
+      <aerosurface_scale name="Aileron travel">
+        <input>fcs/aileron-actuator-norm</input><gain>0.31415926536</gain>
+        <range><min>-0.31415926536</min><max>0.31415926536</max></range>
+        <output>fcs/left-aileron-pos-rad</output>
+      </aerosurface_scale>
+    </channel>
+    <channel name="Yaw">
+      <lag_filter name="Rudder estimated actuator">
+        <input>fcs/rudder-cmd-norm</input><c1>4.0</c1>
+        <output>fcs/rudder-actuator-norm</output>
+      </lag_filter>
+      <aerosurface_scale name="Rudder travel">
+        <input>fcs/rudder-actuator-norm</input><gain>0.38397243544</gain>
+        <range><min>-0.38397243544</min><max>0.38397243544</max></range>
+        <output>fcs/rudder-pos-rad</output>
+      </aerosurface_scale>
+    </channel>
+  </flight_control>
+  <aerodynamics>
+    <alphalimits unit="DEG"><min>-12</min><max>14</max></alphalimits>
+    <axis name="DRAG">
+      <function name="aero/force/drag">
+        <product>
+          <property>aero/qbar-psf</property><property>metrics/Sw-sqft</property>
+          <sum>
+            <value>0.022</value>
+            <product>
+              <sum>
+                <value>0.25</value>
+                <product><property>aero/alpha-rad</property><value>5.20</value></product>
+              </sum>
+              <sum>
+                <value>0.25</value>
+                <product><property>aero/alpha-rad</property><value>5.20</value></product>
+              </sum>
+              <value>0.015775</value>
+            </product>
+            <product><property>aero/beta-rad</property><property>aero/beta-rad</property><value>0.35</value></product>
+          </sum>
+        </product>
+      </function>
+    </axis>
+    <axis name="LIFT">
+      <function name="aero/force/lift">
+        <product>
+          <property>aero/qbar-psf</property><property>metrics/Sw-sqft</property>
+          <sum>
+            <value>0.25</value>
+            <product><property>aero/alpha-rad</property><value>5.20</value></product>
+            <product><property>fcs/elevator-pos-rad</property><value>0.35</value></product>
+            <product><property>aero/ci2vel</property><property>velocities/q-aero-rad_sec</property><value>3.0</value></product>
+          </sum>
+        </product>
+      </function>
+    </axis>
+    <axis name="SIDE">
+      <function name="aero/force/side">
+        <product>
+          <property>aero/qbar-psf</property><property>metrics/Sw-sqft</property>
+          <sum>
+            <product><property>aero/beta-rad</property><value>-0.55</value></product>
+            <product><property>fcs/rudder-pos-rad</property><value>0.18</value></product>
+          </sum>
+        </product>
+      </function>
+    </axis>
+    <axis name="ROLL">
+      <function name="aero/moment/roll">
+        <product>
+          <property>aero/qbar-psf</property><property>metrics/Sw-sqft</property><property>metrics/bw-ft</property>
+          <sum>
+            <product><property>aero/beta-rad</property><value>-0.08</value></product>
+            <product><property>aero/bi2vel</property><property>velocities/p-aero-rad_sec</property><value>-0.45</value></product>
+            <product><property>aero/bi2vel</property><property>velocities/r-aero-rad_sec</property><value>0.08</value></product>
+            <product><property>fcs/left-aileron-pos-rad</property><value>0.12</value></product>
+          </sum>
+        </product>
+      </function>
+    </axis>
+    <axis name="PITCH">
+      <function name="aero/moment/pitch">
+        <product>
+          <property>aero/qbar-psf</property><property>metrics/Sw-sqft</property><property>metrics/cbarw-ft</property>
+          <sum>
+            <value>0.0954</value>
+            <product><property>aero/alpha-rad</property><value>-0.80</value></product>
+            <product><property>aero/ci2vel</property><property>velocities/q-aero-rad_sec</property><value>-8.0</value></product>
+            <product><property>fcs/elevator-pos-rad</property><value>-1.10</value></product>
+          </sum>
+        </product>
+      </function>
+    </axis>
+    <axis name="YAW">
+      <function name="aero/moment/yaw">
+        <product>
+          <property>aero/qbar-psf</property><property>metrics/Sw-sqft</property><property>metrics/bw-ft</property>
+          <sum>
+            <product><property>aero/beta-rad</property><value>0.12</value></product>
+            <product><property>aero/bi2vel</property><property>velocities/r-aero-rad_sec</property><value>-0.18</value></product>
+            <product><property>fcs/rudder-pos-rad</property><value>-0.10</value></product>
+          </sum>
+        </product>
+      </function>
+    </axis>
+  </aerodynamics>
+</fdm_config>

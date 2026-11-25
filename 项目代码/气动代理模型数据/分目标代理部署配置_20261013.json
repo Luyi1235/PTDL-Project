@@ -1,0 +1,9 @@
+{
+  "model": "气动代理模型数据\\气动代理模型_211构型_分目标GP_20261013.json",
+  "sha256": "2f53d6261a1a067f47fbf0e532ca6030ef17cc91d4efdc4592fd90e3f6225d58",
+  "domain_data": "气动代理模型数据\\VSPAERO_DOE扩充样本_131点_Ew_物理选点_网格修复_自适应补样_20261011.csv",
+  "validation": "运行结果\\分目标代理211点_20261013\\部署门槛决策.json",
+  "replay": "运行结果\\分目标代理211点_20261013\\代理闭环接入验收.json",
+  "status": "optional_validated_surrogate",
+  "default_replaced": false
+}

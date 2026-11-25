@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PTDL 飞推控协同优化工作台</title>
+  <link rel="stylesheet" href="/app.css?v=20261018-inline3">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">P</div>
+        <div><strong>PTDL</strong><span>飞推控协同优化</span></div>
+      </div>
+      <div class="side-caption">工作区</div>
+      <a class="nav-link active" href="#setup"><span class="nav-icon">⌘</span>优化配置</a>
+      <a class="nav-link" href="#results"><span class="nav-icon">◫</span>运行结果</a>
+      <a class="nav-link" href="/research-figures/index.html" target="_blank" rel="noopener"><span class="nav-icon">◫</span>科研图集</a>
+      <a class="nav-link" href="/research-figures-latest/index.html" target="_blank" rel="noopener"><span class="nav-icon">◫</span>最新代理与算法结果</a>
+      <div class="sidebar-spacer"></div>
+      <div class="system-card">
+        <div class="system-heading"><span class="status-dot" id="runtimeDot"></span>计算环境</div>
+        <div class="system-text" id="runtimeStatus">检查 Python 运行环境…</div>
+        <div class="scope-note">模型闭环用于软件级仿真筛选，不代表 HIL 或飞行验证。</div>
+      </div>
+      <div class="side-footer">研究估计模型 · 参数可追溯</div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">PTDL / RESEARCH CONSOLE</div>
+          <h1>飞推控协同优化工作台</h1>
+          <p>配置气动、控制、动力与求解精度，运行联合优化并查看可行候选。</p>
+        </div>
+        <div class="topbar-right">
+          <span class="live-tag"><i></i>本地计算</span>
+          <span class="date-label" id="today"></span>
+        </div>
+      </header>
+
+      <div class="layout">
+        <section class="config-column" id="setup">
+          <form id="configForm">
+            <section class="panel">
+              <div class="panel-title"><span class="section-index">01</span><div><h2>优化算法</h2><p>选择比较算法与搜索预算</p></div></div>
+              <div class="field-label">参与运行的算法</div>
+              <div class="check-row algorithm-options">
+                <label><input type="checkbox" name="algorithm" value="NSGA-II" checked><span>NSGA-II</span></label>
+                <label><input type="checkbox" name="algorithm" value="MOEA/D" checked><span>MOEA/D</span></label>
+                <label><input type="checkbox" name="algorithm" value="MOPSO"><span>MOPSO</span></label>
+                <label><input type="checkbox" name="algorithm" value="Hybrid NSGA-II/MOPSO"><span>混合算法</span></label>
+                <label><input type="checkbox" name="algorithm" value="PTDL-耦合引导"><span>PTDL 耦合引导</span></label>
+              </div>
+              <div class="field-grid three">
+                <label class="field"><span>分辨率 H</span><input name="resolution" type="number" min="1" max="12" value="2"><small>决定种群规模</small></label>
+                <label class="field"><span>迭代代数</span><input name="generations" type="number" min="1" max="500" value="8"></label>
+                <label class="field"><span>随机种子</span><input name="seed" type="number" value="20261005"></label>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-title"><span class="section-index teal">02</span><div><h2>气动模型与设计域</h2><p>DOE 数据范围内的构型搜索</p></div></div>
+              <div class="field-grid two surrogate-grid">
+                <label class="field"><span>代理模型训练数据</span>
+                  <select name="precision">
+                    <option value="fine6144" selected>几何参数代理模型 · 6144 个训练构型 · 推荐</option>
+                    <option value="selectedmesh6144">筛选网格融合代理模型 · 6144 个训练构型</option>
+                  </select>
+                  <small id="precisionHelp" aria-live="polite"></small>
+                </label>
+                <div class="model-note" id="modelValidation" aria-live="polite">
+                  <!-- BEGIN GENERATED MODEL VALIDATION -->
+<table class="validation-table"><thead><tr><th>独立测试</th><th>MAE</th><th>R²</th></tr></thead><tbody><tr><td>升力斜率 / rad⁻¹</td><td>0.016</td><td>0.960</td></tr><tr><td>尾迹效率</td><td>0.026</td><td>0.933</td></tr></tbody></table>
+  <!-- END GENERATED MODEL VALIDATION -->
+                </div>
+              </div>
+              <div class="field-grid two compact-top">
+                <label class="field"><span>VSPAERO 实算网格</span>
+                  <select name="vsp_mesh_level">
+                    <option value="legacy">原始网格</option>
+                    <option value="medium">加密网格</option>
+                    <option value="fine">精细网格</option>
+                  </select>
+                  <small id="vsp_mesh_levelHelp" aria-live="polite"></small>
+                </label>
+                <label class="field"><span>气动复评方式</span>
+                  <select name="fidelity">
+                    <option value="surrogate" selected>仅用气动代理模型</option>
+                    <option value="all">每个候选评价均调用 VSPAERO</option>
+                    <option value="finalists">仅对 Pareto 候选调用 VSPAERO</option>
+                    <option value="stepwise">逐积分步调用 VSPAERO</option>
+                  </select>
+                  <small id="fidelityHelp" aria-live="polite"></small>
+                </label>
+              </div>
+              <div class="field-grid two compact-top mode-controls" id="aeroStepControls" hidden>
+                <label class="field"><span>VSPAERO 候选轨迹时长 <em>s</em></span><input name="aero_step_duration" type="number" min="0.1" max="60" step="0.1" value="8"></label>
+                <label class="field"><span>VSPAERO 积分步长 <em>s</em></span><input name="aero_step_s" type="number" min="0.008333" max="0.25" step="any" value="0.25"></label>
+              </div>
+              <div class="range-header"><span>可优化几何变量</span><button type="button" class="text-button" id="resetBounds">恢复 DOE 全范围</button></div>
+              <div id="boundsGrid" class="bounds-grid"></div>
+              <div class="model-note"><strong>边界说明</strong><span>几何范围限制在所选 DOE 的逐变量最小值与最大值内；逐变量在域内不保证位于 DOE 凸包内插区。</span></div>
+              <details class="parameter-details">
+                <summary><span>查看或修改基准机体参数</span><small>首个种子候选 · 可编辑</small></summary>
+                <div class="parameter-details-body">
+                  <div class="field-grid four">
+                    <label class="field"><span>机翼面积 <em>m²</em></span><input name="baseline_wing_area_m2" type="number" min="22" max="40" step="any"></label>
+                    <label class="field"><span>展弦比</span><input name="baseline_aspect_ratio" type="number" min="18" max="31" step="any"></label>
+                    <label class="field"><span>梢根比</span><input name="baseline_taper_ratio" type="number" min="0.3" max="0.7" step="any"></label>
+                    <label class="field"><span>后掠角 <em>deg</em></span><input name="baseline_sweep_deg" type="number" min="0" max="8" step="any"></label>
+                  </div>
+                  <div class="field-grid four compact-top">
+                    <label class="field"><span>翼尖扭转角 <em>deg</em></span><input name="baseline_tip_twist_deg" type="number" min="-3" max="1.5" step="any"></label>
+                    <label class="field"><span>机身长度 <em>m</em></span><input name="baseline_fuselage_length_m" type="number" min="7.5" max="10" step="any"></label>
+                    <label class="field"><span>机身直径 <em>m</em></span><input name="baseline_fuselage_diameter_m" type="number" min="0.65" max="0.95" step="any"></label>
+                    <label class="field"><span>螺旋桨直径 <em>m</em></span><input name="baseline_propeller_diameter_m" type="number" min="2.1" max="3" step="any"></label>
+                  </div>
+                  <div class="field-grid two compact-top">
+                    <label class="field"><span>任务载荷 <em>kg</em></span><input name="baseline_payload_mass_kg" type="number" min="100" max="205" step="any"></label>
+                    <label class="field"><span>混动系统质量 <em>kg</em></span><input name="baseline_hybrid_system_mass_kg" type="number" min="0" max="180" step="any"></label>
+                  </div>
+                  <div class="derived-grid" id="aircraftDerived" aria-live="polite"></div>
+                  <div class="model-note"><strong>使用方式</strong><span>这些值形成首个种子候选；搜索范围仍由上方几何边界控制。几何派生量随输入即时更新，质量与气动性能仍由模型计算。</span></div>
+                </div>
+              </details>
+            </section>
+
+            <section class="panel">
+              <div class="panel-title"><span class="section-index coral">03</span><div><h2>飞行控制与扰动</h2><p>能量管理策略及响应测试条件</p></div></div>
+              <div class="field-grid two">
+                <label class="field"><span>联合优化控制策略</span>
+                  <select name="controller">
+                    <option value="mpc" selected>MPC 能量管理</option>
+                    <option value="phase-mpc">分阶段参数 MPC 能量管理</option>
+                    <option value="rule">规则控制</option>
+                    <option value="source-ems">动能学院三层能量管理</option>
+                    <option value="fuzzy">模糊自适应控制</option>
+                    <option value="fault-tolerant-fuzzy">故障容错模糊控制</option>
+                    <option value="neural-imitation">神经网络 MPC 模仿策略</option>
+                  </select>
+                  <small id="controllerHelp" aria-live="polite"></small>
+                </label>
+                <label class="field"><span>六自由度计算范围</span>
+                  <select name="sixdof_mode">
+                    <option value="optimizer-loop" selected>每个候选评价均运行 JSBSim 六自由度检查</option>
+                    <option value="pareto-screen">仅对 Pareto 候选运行 JSBSim 六自由度检查</option>
+                    <option value="stepwise">将 JSBSim 作为逐积分步状态推进器（按模型积分步更新）</option>
+                    <option value="full-mission">每个候选运行完整 80 小时 JSBSim 六阶段任务</option>
+                  </select>
+                  <small id="sixdofHelp" aria-live="polite"></small>
+                </label>
+              </div>
+              <div class="field-grid two compact-top">
+                <label class="field"><span>响应目标定义</span>
+                  <select name="response_definition">
+                    <option value="recovery-integral" selected>恢复时间与扰动偏差积分</option>
+                    <option value="legacy">恢复时间与模式切换时间（历史口径）</option>
+                  </select>
+                  <small id="response_definitionHelp" aria-live="polite"></small>
+                </label>
+              </div>
+              <div class="field-grid two compact-top">
+                <label class="field"><span>JSBSim 单次检查时长 <em>s</em></span><input name="sixdof_duration" type="number" min="5" max="60" step="1" value="8"><small>短时三轴姿态/舵面脉冲包线检查</small></label>
+              </div>
+              <div class="field-grid two compact-top mode-controls" id="sixdofMissionControls" hidden>
+                <label class="field"><span>80 小时任务判据</span>
+                  <select name="sixdof_duration_basis">
+                    <option value="total-including-landing" selected>80 小时总任务（含下降和着陆）</option>
+                    <option value="endurance-before-landing">先飞满 80 小时，再下降和着陆</option>
+                  </select>
+                  <small id="sixdofDurationBasisHelp" aria-live="polite"></small>
+                </label>
+                <div class="model-note"><strong>全任务闭环</strong><span>优化器对每个候选运行 JSBSim，并将触地、最低空速、燃油储备和俯仰约束反馈给优化器。选择“先飞满 80 小时”时，下降着陆另计，预计总仿真约 82.25 小时，另有最多 2 小时末段窗口。参数为估计值，计算量很大。</span></div>
+              </div>
+              <div class="field-grid two compact-top mode-controls" id="sixdofStepControls" hidden>
+                <label class="field"><span>JSBSim 积分步长 <em>s</em></span><input name="sixdof_step_s" type="number" min="0.008333" max="0.25" step="any" value="0.05"></label>
+              </div>
+              <div class="field-grid four">
+                <label class="field"><span>MPC 预测步数</span><input name="mpc_horizon" type="number" min="1" max="6" value="3"></label>
+                <label class="field"><span>发动机动作档位</span><input name="mpc_action_levels" type="number" min="2" max="7" value="3"></label>
+                <label class="field"><span>迎风阶跃 <em>m/s</em></span><input name="wind_step" type="number" min="0" max="30" step="0.5" value="8"></label>
+                <label class="field"><span>持续时间 <em>s</em></span><input name="wind_duration" type="number" min="1" max="1800" step="1" value="60"></label>
+              </div>
+              <div class="field-grid two compact-top">
+                <label class="field"><span>MPC 末端 SOC 权重 <em>MJ</em></span><input name="mpc_soc_weight" type="number" min="0" max="20" step="0.1" value="4"></label>
+                <label class="field"><span>发动机功率平滑惩罚 <em>MJ/kW</em></span><input name="mpc_slew_penalty" type="number" min="0" max="0.05" step="0.001" value="0.002"></label>
+              </div>
+              <div class="model-note"><strong>范围说明</strong><span>02 控制气动求解方式，03 控制 JSBSim 六自由度评价范围，可分别组合。短时逐积分步模式只模拟短轨迹；选择“完整 80 小时任务”后，JSBSim 会进入每个优化候选的完整任务评价。</span></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-title"><span class="section-index amber">04</span><div><h2>动力系统参数</h2><p>动能学院 1005 版 · 高度相关发动机图谱与串联混动系统</p></div></div>
+              <div class="field-grid four">
+                <label class="field"><span>发动机额定倍率</span><input name="engine_multiplier" type="number" min="0.5" max="3" step="0.05" value="1.2"></label>
+                <label class="field"><span>发动机转速 <em>rpm</em></span><input name="engine_speed" type="number" min="2800" max="6100" step="100" value="5000"></label>
+                <label class="field"><span>燃油流量倍率</span><input name="engine_fuel_scale" type="number" min="0.5" max="2" step="0.05" value="1"></label>
+                <label class="field"><span>发动机功率变化率 <em>kW/s</em></span><input name="engine_ramp" type="number" min="0.5" max="30" step="0.5" value="10"></label>
+              </div>
+              <div class="field-grid four compact-top">
+                <label class="field"><span>电池助推功率倍率</span><input name="motor_multiplier" type="number" min="0.5" max="3" step="0.05" value="1.2"></label>
+                <label class="field"><span>电机转速 <em>rpm</em></span><input name="motor_speed" type="number" min="500" max="5000" step="50" value="2100"></label>
+                <label class="field"><span>电机最少并联支路数</span><input name="motor_branches" type="number" min="1" max="8" step="1" value="2"></label>
+                <label class="field"><span>逆变器效率</span><input name="inverter_efficiency" type="number" min="0.7" max="1" step="0.01" value="0.95"></label>
+              </div>
+              <div class="field-grid four compact-top">
+                <label class="field"><span>电池能量倍率</span><input name="battery_multiplier" type="number" min="0.5" max="3" step="0.05" value="1.2"></label>
+                <label class="field"><span>电池包内阻修正倍率</span><input name="battery_resistance" type="number" min="0.1" max="60" step="0.1" value="1"></label>
+                <label class="field"><span>电池 SOC 下限</span><input name="battery_soc_min" type="number" min="0.1" max="0.8" step="0.01" value="0.2"></label>
+                <label class="field"><span>电池 SOC 上限</span><input name="battery_soc_max" type="number" min="0.85" max="1" step="0.01" value="1"></label>
+              </div>
+              <details class="parameter-details">
+                <summary><span>查看或修改其他动力模型参数</span><small>额定假设 · 发动机图谱</small></summary>
+                <div class="parameter-details-body">
+                  <div class="field-grid three">
+                    <label class="field"><span>基础发动机功率 <em>kW</em></span><input name="engine_baseline_power_kw" type="number" min="20" max="200" step="1"></label>
+                    <label class="field"><span>混动质量功率增量 <em>kW/kg</em></span><input name="engine_upgrade_kw_per_hybrid_kg" type="number" min="0" max="2" step="0.01"></label>
+                    <label class="field"><span>发动机功率上限 <em>kW</em></span><input name="engine_power_ceiling_kw" type="number" min="20" max="300" step="1"></label>
+                  </div>
+                  <div class="field-grid three compact-top">
+                    <label class="field"><span>混动系统比能量 <em>Wh/kg</em></span><input name="hybrid_specific_energy_wh_per_kg" type="number" min="50" max="500" step="1"></label>
+                    <label class="field"><span>电池助推比功率 <em>kW/kg</em></span><input name="motor_power_kw_per_hybrid_kg" type="number" min="0.1" max="5" step="0.1"></label>
+                    <label class="field"><span>发动机图谱效率修正倍率</span><input name="engine_efficiency_factor" type="number" min="0.5" max="1.5" step="0.01"></label>
+                  </div>
+                  <label class="field compact-top"><span>自定义发动机燃油图 CSV 路径</span><input name="engine_map_path" type="text" placeholder="留空使用包内 EngineMap_60Case.csv"></label>
+                  <div class="reference-grid" id="powertrainReference"></div>
+                  <div class="model-note"><strong>参数说明</strong><span>图谱覆盖高度 0 至 5000 m、转速 2800 至 6100 rpm。超出高度范围采用边界值并记录次数。效率修正倍率为 1 时直接使用图谱油耗。自定义图谱须满足新版 60 点高度、转速、节气门网格。</span></div>
+                </div>
+              </details>
+              <div class="model-note"><strong>总成配置</strong><span>发动机、电池和电机采用 1005 版部件模型，任务总成沿用 PTDL 额定倍率。电机支路按发电与电池助推总功率自动增加。电池包内阻已按 81 串 3 并计算，修正倍率默认 1。</span></div>
+            </section>
+
+            <div class="run-bar">
+              <div><strong id="runEstimate">准备就绪</strong><span>实算气动、较大 H 或多算法会增加运行时间</span></div>
+              <button type="submit" class="run-button" id="runButton"><span>▶</span>运行联合优化</button>
+            </div>
+            <div class="runtime-estimate" id="runtimeEstimate" aria-live="polite">预计运行时间：正在读取本机运行基准…</div>
+            <div class="form-error" id="formError" role="alert"></div>
+          </form>
+        </section>
+
+        <section class="results-column" id="results">
+          <div class="results-heading">
+            <div><div class="eyebrow">RUN MONITOR</div><h2>运行与结果</h2></div>
+            <button class="icon-button" id="refreshButton" title="刷新运行状态" aria-label="刷新运行状态">↻</button>
+          </div>
+          <div class="run-status panel">
+            <div class="status-top"><span class="status-pill idle" id="runStatusPill">空闲</span><span class="run-id" id="runId">尚未提交任务</span></div>
+            <div class="history-row"><label for="runHistory">选择最近任务</label><select id="runHistory"><option value="">当前会话</option></select></div>
+            <div class="progress-track" role="progressbar" aria-label="优化运行进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progressBar"></div></div>
+            <div class="progress-caption"><span class="status-message" id="statusMessage">配置参数后启动优化。运行日志和结果将在此处更新。</span><strong id="progressPercent">0%</strong></div>
+          </div>
+          <div class="metric-grid">
+            <div class="metric"><span>候选可行性</span><strong id="metricFeasible">—</strong><small id="metricAlgorithm">等待运行</small></div>
+            <div class="metric"><span>任务续航</span><strong id="metricEndurance">—</strong><small>择优候选独立回放</small></div>
+            <div class="metric"><span>燃油消耗</span><strong id="metricFuel">—</strong><small>估计模型输出</small></div>
+            <div class="metric"><span>末端 SOC</span><strong id="metricSoc">—</strong><small>电池荷电状态</small></div>
+          </div>
+          <div class="panel chart-panel">
+            <div class="chart-title"><div><h3>Pareto 三目标分布</h3><p>历代可行档案 · 拖动图形可旋转视角</p></div>
+              <label class="algorithm-select"><span>算法</span><select id="paretoAlgorithm" aria-label="选择Pareto算法"></select></label>
+            </div>
+            <div class="chart-wrap"><canvas id="paretoChart" role="img" aria-label="三目标 Pareto 分布：任务能量、轨迹跟踪误差、响应目标"></canvas></div>
+            <div class="chart-axis"><span>X：任务能量（MJ）</span><span>Y：轨迹跟踪误差</span><span>Z：响应目标（s）</span></div>
+            <p class="model-note" id="resultMetricBasis"></p>
+            <div class="chart-note">图中展示优化器的三个正式目标；燃油消耗、末端 SOC 等是候选诊断/筛选指标，不是额外的 Pareto 目标。</div>
+          </div>
+          <div class="panel table-panel">
+            <div class="chart-title"><div><h3>算法运行摘要</h3><p>历代可行 Pareto 档案与终代可行个体</p></div></div>
+            <div class="table-scroll"><table><thead><tr><th>算法</th><th>终代可行</th><th>Pareto 数</th><th>耗时</th></tr></thead><tbody id="algorithmTable"><tr><td colspan="4" class="empty-cell">暂无运行数据</td></tr></tbody></table></div>
+          </div>
+          <details class="panel log-panel">
+            <summary><span>运行日志</span><span class="log-hint">展开查看终端输出</span></summary>
+            <pre id="runLog">等待任务…</pre>
+          </details>
+          <details class="panel log-panel config-log">
+            <summary><span>本次输入参数</span><span class="log-hint">查看运行时配置</span></summary>
+            <pre id="runConfig">尚无已选运行配置</pre>
+          </details>
+          <div class="disclaimer">计算结果来自当前估计模型，仅供科研方案筛选。运行输入、输出文件保存在 <code>运行结果/前端运行_*</code>。</div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <!-- BEGIN GENERATED MODEL DATA -->
+<script type="application/json" id="modelData">{"model_configs":{"fine6144":{"name":"fine6144","validation":{"model_sha256":"2f35ba6f33eb3bf1e19e5a8f47b352ec3a2b016012cdf9f6c2c47a17fa605493","metrics":[{"target":"vspaero_cl_alpha_per_rad","count":128,"mae":0.016269536645312693,"rmse":0.022210884737997105,"r2":0.9596413430542531,"within_bounds_count":128},{"target":"vspaero_oswald_efficiency","count":122,"mae":0.02597418002735294,"rmse":0.03541102036310778,"r2":0.9330041161151464,"within_bounds_count":122}],"difficult_metrics":[{"target":"vspaero_cl_alpha_per_rad","count":124,"mae":0.019054780311049506,"rmse":0.027958398666031545,"r2":0.9513804938375869,"within_bounds_count":124},{"target":"vspaero_oswald_efficiency","count":119,"mae":0.07342569864375313,"rmse":0.11513763714019336,"r2":0.7022718234233303,"within_bounds_count":119}],"combined_metrics":[{"target":"vspaero_cl_alpha_per_rad","count":252,"mae":0.017640053369722873,"rmse":0.025203357852016453,"r2":0.9551853405701092,"within_bounds_count":252},{"target":"vspaero_oswald_efficiency","count":241,"mae":0.049404597933376274,"rmse":0.08473843345509499,"r2":0.779311268405009,"within_bounds_count":241}],"dataset_label":"均匀独立测试 · 128 构型","dataset_count":128,"within_bounds_count":128,"validation_date":"2026-10-20","training_count":6144,"prediction_source":"fine6144","requires_geometry":false,"test_role":"Predeclared uniform feasible holdout; difficult stratum reported separately"},"doe_ranges":{"wing_area_m2":[24.81131160834062,39.97415404905051],"aspect_ratio":[18.00574394191443,31.0],"taper_ratio":[0.3000343419408764,0.6974493157417421],"sweep_deg":[0.0,7.970506349515301],"tip_twist_deg":[-2.9958137197597376,1.4680508029715398],"fuselage_length_m":[7.503602013486113,9.98721824122895],"fuselage_diameter_m":[0.65,0.9492832243180384]}},"selectedmesh6144":{"name":"selectedmesh6144","validation":{"model_sha256":"85f883e4df596b108905d1cb96932ac6e1bcfe010513a462e6e653a6fb86db71","metrics":[{"target":"vspaero_cl_alpha_per_rad","count":128,"mae":0.016269536645312693,"rmse":0.022210884737997105,"r2":0.9596413430542531,"within_bounds_count":128},{"target":"vspaero_oswald_efficiency","count":122,"mae":0.024709329061165748,"rmse":0.03375093304932771,"r2":0.9391384783960864,"within_bounds_count":122}],"difficult_metrics":[{"target":"vspaero_cl_alpha_per_rad","count":124,"mae":0.019054780311049506,"rmse":0.027958398666031545,"r2":0.9513804938375869,"within_bounds_count":124},{"target":"vspaero_oswald_efficiency","count":119,"mae":0.07105119872078307,"rmse":0.11232466030764722,"r2":0.7166419597802415,"within_bounds_count":119}],"combined_metrics":[{"target":"vspaero_cl_alpha_per_rad","count":252,"mae":0.017640053369722873,"rmse":0.025203357852016453,"r2":0.9551853405701092,"within_bounds_count":252},{"target":"vspaero_oswald_efficiency","count":241,"mae":0.0475918290175743,"rmse":0.08250175396203166,"r2":0.7908077169022913,"within_bounds_count":241}],"dataset_label":"均匀独立测试 · 128 构型","dataset_count":128,"within_bounds_count":128,"validation_date":"2026-10-20","training_count":6144,"prediction_source":"selected_mesh","requires_geometry":true,"test_role":"Predeclared uniform feasible holdout; difficult stratum reported separately"},"doe_ranges":{"wing_area_m2":[24.81131160834062,39.97415404905051],"aspect_ratio":[18.00574394191443,31.0],"taper_ratio":[0.3000343419408764,0.6974493157417421],"sweep_deg":[0.0,7.970506349515301],"tip_twist_deg":[-2.9958137197597376,1.4680508029715398],"fuselage_length_m":[7.503602013486113,9.98721824122895],"fuselage_diameter_m":[0.65,0.9492832243180384]}}}}</script>
+  <!-- END GENERATED MODEL DATA -->
+  <script src="/app.js?v=20261023-powertrain1005"></script>
+</body>
+</html>

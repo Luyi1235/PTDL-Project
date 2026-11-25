@@ -1,0 +1,138 @@
+{
+  "schema": "ptdl_surrogate_validation_registry_v1",
+  "dataset": "D:\\LDTP\\LDTP\\PTDL飞推控协同优化代码包\\运行结果\\扩样筛选网格代理_20261020\\独立256构型\\独立逐点.csv",
+  "dataset_sha256": "655051899dacd2d652a7d859cb68eb17211cd38c7ff3f8f61a9046ac6a773c3d",
+  "note": "Same predeclared uniform cohort for both models; all valid labels retained. Difficult and combined metrics are also retained.",
+  "models": {
+    "fine6144": {
+      "model_sha256": "2f35ba6f33eb3bf1e19e5a8f47b352ec3a2b016012cdf9f6c2c47a17fa605493",
+      "metrics": [
+        {
+          "target": "vspaero_cl_alpha_per_rad",
+          "count": 128,
+          "mae": 0.016269536645312693,
+          "rmse": 0.022210884737997105,
+          "r2": 0.9596413430542531,
+          "within_bounds_count": 128
+        },
+        {
+          "target": "vspaero_oswald_efficiency",
+          "count": 122,
+          "mae": 0.02597418002735294,
+          "rmse": 0.03541102036310778,
+          "r2": 0.9330041161151464,
+          "within_bounds_count": 122
+        }
+      ],
+      "difficult_metrics": [
+        {
+          "target": "vspaero_cl_alpha_per_rad",
+          "count": 124,
+          "mae": 0.019054780311049506,
+          "rmse": 0.027958398666031545,
+          "r2": 0.9513804938375869,
+          "within_bounds_count": 124
+        },
+        {
+          "target": "vspaero_oswald_efficiency",
+          "count": 119,
+          "mae": 0.07342569864375313,
+          "rmse": 0.11513763714019336,
+          "r2": 0.7022718234233303,
+          "within_bounds_count": 119
+        }
+      ],
+      "combined_metrics": [
+        {
+          "target": "vspaero_cl_alpha_per_rad",
+          "count": 252,
+          "mae": 0.017640053369722873,
+          "rmse": 0.025203357852016453,
+          "r2": 0.9551853405701092,
+          "within_bounds_count": 252
+        },
+        {
+          "target": "vspaero_oswald_efficiency",
+          "count": 241,
+          "mae": 0.049404597933376274,
+          "rmse": 0.08473843345509499,
+          "r2": 0.779311268405009,
+          "within_bounds_count": 241
+        }
+      ],
+      "dataset_label": "均匀独立测试 · 128 构型",
+      "dataset_count": 128,
+      "within_bounds_count": 128,
+      "validation_date": "2026-10-20",
+      "training_count": 6144,
+      "prediction_source": "fine6144",
+      "requires_geometry": false,
+      "test_role": "Predeclared uniform feasible holdout; difficult stratum reported separately"
+    },
+    "selectedmesh6144": {
+      "model_sha256": "85f883e4df596b108905d1cb96932ac6e1bcfe010513a462e6e653a6fb86db71",
+      "metrics": [
+        {
+          "target": "vspaero_cl_alpha_per_rad",
+          "count": 128,
+          "mae": 0.016269536645312693,
+          "rmse": 0.022210884737997105,
+          "r2": 0.9596413430542531,
+          "within_bounds_count": 128
+        },
+        {
+          "target": "vspaero_oswald_efficiency",
+          "count": 122,
+          "mae": 0.024709329061165748,
+          "rmse": 0.03375093304932771,
+          "r2": 0.9391384783960864,
+          "within_bounds_count": 122
+        }
+      ],
+      "difficult_metrics": [
+        {
+          "target": "vspaero_cl_alpha_per_rad",
+          "count": 124,
+          "mae": 0.019054780311049506,
+          "rmse": 0.027958398666031545,
+          "r2": 0.9513804938375869,
+          "within_bounds_count": 124
+        },
+        {
+          "target": "vspaero_oswald_efficiency",
+          "count": 119,
+          "mae": 0.07105119872078307,
+          "rmse": 0.11232466030764722,
+          "r2": 0.7166419597802415,
+          "within_bounds_count": 119
+        }
+      ],
+      "combined_metrics": [
+        {
+          "target": "vspaero_cl_alpha_per_rad",
+          "count": 252,
+          "mae": 0.017640053369722873,
+          "rmse": 0.025203357852016453,
+          "r2": 0.9551853405701092,
+          "within_bounds_count": 252
+        },
+        {
+          "target": "vspaero_oswald_efficiency",
+          "count": 241,
+          "mae": 0.0475918290175743,
+          "rmse": 0.08250175396203166,
+          "r2": 0.7908077169022913,
+          "within_bounds_count": 241
+        }
+      ],
+      "dataset_label": "均匀独立测试 · 128 构型",
+      "dataset_count": 128,
+      "within_bounds_count": 128,
+      "validation_date": "2026-10-20",
+      "training_count": 6144,
+      "prediction_source": "selected_mesh",
+      "requires_geometry": true,
+      "test_role": "Predeclared uniform feasible holdout; difficult stratum reported separately"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "schema": "full_task_endurance_calibration_dynamic_cd0_v1",
+  "purpose": "Reusable full-task 72-hour inverse calibration for the current low-order reference model.",
+  "efficiency_scale": 1.0695495605468748,
+  "baseline_duration_h": 71.98333333333333
+}

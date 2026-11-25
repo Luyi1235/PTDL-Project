@@ -1,0 +1,74 @@
+{
+  "feature_labels": [
+    "wing_area_m2",
+    "aspect_ratio",
+    "taper_ratio",
+    "sweep_deg",
+    "tip_twist_deg",
+    "fuselage_length_m",
+    "fuselage_diameter_m"
+  ],
+  "feature_mean": [
+    30.70017790588833,
+    24.497240691073145,
+    0.49553266807464774,
+    3.8364646973324086,
+    -0.7144107623643791,
+    8.71923468944504,
+    0.7953002076616952
+  ],
+  "feature_scale": [
+    5.170499003246851,
+    3.622533215259233,
+    0.11082913778547025,
+    2.3723166021523765,
+    1.2671977451165262,
+    0.7143353289991248,
+    0.08610298879562137
+  ],
+  "cl_alpha_coefficients": [
+    6.623593400773735,
+    0.0,
+    0.16937137483603473,
+    -0.29042180942019585,
+    0.00807149529484168,
+    0.0683535336983244,
+    0.0,
+    0.0
+  ],
+  "oswald_coefficients": [
+    0.9192294846984171,
+    -0.02862475230686726,
+    -0.04318827238313101,
+    0.04309724482573243,
+    0.0012373008348000396,
+    -0.018706554675325268,
+    0.018399304428717202,
+    0.013086431349906079
+  ],
+  "baseline_cl_alpha_per_rad": 6.3648569683407175,
+  "baseline_oswald_efficiency": 0.9676387400538029,
+  "ridge_lambda": 0.5,
+  "training_samples": 15,
+  "regression_spec": {
+    "cl_alpha_features": [
+      "aspect_ratio",
+      "taper_ratio",
+      "sweep_deg",
+      "tip_twist_deg"
+    ],
+    "cl_alpha_ridge_lambda": 1.0,
+    "oswald_features": [
+      "wing_area_m2",
+      "aspect_ratio",
+      "taper_ratio",
+      "sweep_deg",
+      "tip_twist_deg",
+      "fuselage_length_m",
+      "fuselage_diameter_m"
+    ],
+    "oswald_ridge_lambda": 0.5,
+    "selection_method": "15-point VSPAERO DOE leave-one-out cross-validation"
+  },
+  "model_note": "VSPAERO VLM corrects CL_alpha and Oswald-efficiency trends; calibrated component-build-up parasite drag remains separate."
+}

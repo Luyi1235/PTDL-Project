@@ -1,0 +1,80 @@
+{
+  "profile_name": "PTDL 80 h endurance-adapted full-task profile",
+  "basis": "Retains the supplied checkout profile's airborne phase sequence but is a separate PTDL endurance mission. The ISR altitude and speed envelope are selected for compatibility with the open-data 72 h calibration and the 80 h hard constraint.",
+  "requirements": {
+    "target_total_duration_h": 80.0,
+    "endurance_hard_constraint": "T_endurance >= 80 h",
+    "payload_min_kg": 100.0,
+    "wingspan_max_m": 32.0
+  },
+  "segments": [
+    {
+      "label": "main_climb_to_leveloff",
+      "duration_s": 3600.0,
+      "altitude_target_m": 2800.0,
+      "speed_target_mps": 52.0,
+      "speed_bounds_mps": [44.0, 58.0],
+      "engine_power_bounds_kw": [70.0, 120.0],
+      "motor_assist_bounds_kw": [0.0, 30.0],
+      "max_flight_path_angle_deg": 8.0,
+      "time_step_s": 60.0
+    },
+    {
+      "label": "short_leveloff_to_isr_altitude",
+      "duration_s": 900.0,
+      "altitude_target_m": 3000.0,
+      "speed_target_mps": 36.01,
+      "speed_bounds_mps": [32.0, 42.0],
+      "engine_power_bounds_kw": [45.0, 120.0],
+      "motor_assist_bounds_kw": [0.0, 20.0],
+      "max_flight_path_angle_deg": 3.0,
+      "time_step_s": 60.0
+    },
+    {
+      "label": "endurance_loiter",
+      "duration_rule": "residual_to_target_total_duration",
+      "altitude_target_m": 3000.0,
+      "speed_target_mps": 36.01,
+      "speed_bounds_mps": [30.0, 42.0],
+      "engine_power_bounds_kw": [15.0, 100.0],
+      "motor_assist_bounds_kw": [0.0, 8.0],
+      "max_flight_path_angle_deg": 1.0,
+      "time_step_s": 300.0
+    },
+    {
+      "label": "long_descent",
+      "duration_s": 3000.0,
+      "altitude_target_m": 800.0,
+      "speed_target_mps": 42.0,
+      "speed_bounds_mps": [30.0, 55.0],
+      "engine_power_bounds_kw": [10.0, 70.0],
+      "motor_assist_bounds_kw": [0.0, 10.0],
+      "motor_disabled": true,
+      "engine_required_min_kw": 1.0,
+      "max_flight_path_angle_deg": 5.0,
+      "time_step_s": 60.0
+    },
+    {
+      "label": "approach_descent",
+      "duration_s": 450.0,
+      "altitude_target_m": 50.0,
+      "speed_target_mps": 30.0,
+      "speed_bounds_mps": [22.0, 42.0],
+      "engine_power_bounds_kw": [20.0, 80.0],
+      "motor_assist_bounds_kw": [0.0, 15.0],
+      "max_flight_path_angle_deg": 5.0,
+      "time_step_s": 30.0
+    },
+    {
+      "label": "flare",
+      "duration_s": 600.0,
+      "altitude_target_m": 0.0,
+      "speed_target_mps": 21.0,
+      "speed_bounds_mps": [18.0, 30.0],
+      "engine_power_bounds_kw": [10.0, 70.0],
+      "motor_assist_bounds_kw": [0.0, 15.0],
+      "max_flight_path_angle_deg": 4.0,
+      "time_step_s": 20.0
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "provenance": "candidate_index 6 from the prior robust VSPAERO-corrected H=6 MOEA/D study; feasible in the reference powertrain model, used here as a replay point for the component-equivalent model",
+  "previous_reference_result": {
+    "achieved_total_duration_h": 80.0,
+    "terminal_soc": 0.6166305800135773,
+    "fuel_used_kg": 456.8101048285369
+  },
+  "design": {
+    "wing_area_m2": 24.81131160834062,
+    "aspect_ratio": 30.05255088451417,
+    "taper_ratio": 0.5190947679426358,
+    "sweep_deg": 0.2908830396026455,
+    "tip_twist_deg": -0.9694825713338626,
+    "fuselage_length_m": 8.211221616609741,
+    "fuselage_diameter_m": 0.6501290806879384,
+    "propeller_diameter_m": 2.256884301054812,
+    "payload_mass_kg": 110.04789221101224,
+    "hybrid_system_mass_kg": 78.08425552327873
+  },
+  "isr_cruise_speed_mps": 30.33562710548363,
+  "engine_caps_kw": [
+    119.99752024639132,
+    119.96917676086969,
+    99.9771380024091,
+    60.99091260221857,
+    75.95739003233302,
+    45.5729722386526
+  ],
+  "motor_assist_kw": [
+    2.0866033374924093,
+    1.745428379236106,
+    0.0060020262137039,
+    0.8034024973593406,
+    0.9234172622683074,
+    0.3793921814131351
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "schema_version": 2,
+  "date": "2026-10-27",
+  "status": "designed_not_executed",
+  "formal_execution_ready": false,
+  "artifact_kind": "research_protocol_manifest_not_production_runner_config",
+  "supersedes": "论文实验矩阵_20261027.json",
+  "document": "PTDL论文实验设计_文献实验范式修订版_20261027.md",
+  "organization": "literature_style_dynamic_benchmarks_codesign_and_full_missions",
+  "counts_are_planned_not_completed": true,
+  "source_and_project_settings_distinguished": true,
+  "production_changes": false,
+  "methods": [
+    {"id": "B01", "name": "NSGA-II", "status": "existing_requires_common_mode_extension"},
+    {"id": "B02", "name": "MOEA/D", "status": "existing_requires_common_mode_extension"},
+    {"id": "B03", "name": "MOPSO", "status": "existing_requires_common_mode_extension"},
+    {"id": "B04", "name": "Original hybrid", "status": "existing_requires_common_mode_extension"},
+    {"id": "B05", "name": "PTDL coupling-guided", "status": "existing_requires_common_mode_extension"},
+    {"id": "B07", "name": "Common outer plus adaptive inner accuracy", "status": "planned_adaptation"},
+    {"id": "B10", "name": "Common outer plus GN-MIQP inner", "status": "planned_adaptation", "reference": "R3"},
+    {"id": "B11", "name": "Common outer plus DPA inner", "status": "planned_adaptation", "reference": "R4"},
+    {"id": "B12", "name": "Common outer plus ISTO inner", "status": "planned_adaptation", "reference": "R5"},
+    {"id": "M01", "name": "Proposed error-driven multiobjective co-design", "status": "proposed"}
+  ],
+  "public_module_methods": [
+    {"id": "CIA_BNB", "name": "CIA plus pycombina"},
+    {"id": "CIA_MILP", "name": "CIA plus general MILP"},
+    {"id": "DPA", "name": "Dynamic-programming-inspired CIA"},
+    {"id": "GN_MIQP", "name": "State-aware GN-MIQP"},
+    {"id": "ISTO", "name": "Iterative switching-time optimization"},
+    {"id": "M01_MODULE", "name": "Applicable proposed inner modules"}
+  ],
+  "model_freeze": {
+    "power_version": "1005-20261023",
+    "aero_sha256": null,
+    "task_profiles_sha256": null,
+    "response_definition": "recovery-integral",
+    "primary_archive": "revalidated_feasible_cross_generation_external_archive",
+    "normalization": null,
+    "HV_reference": null,
+    "source_code_revision": null,
+    "physical_constraints": null,
+    "decision_bounds": null,
+    "same_design_control_mode_decision_space": true,
+    "old_power_results_used_as_new_results": false
+  },
+  "public_benchmark": {
+    "study": "P1",
+    "reference": "R5",
+    "names": ["DTS", "LVF", "VDP", "TRJ"],
+    "objective": "original_native_single_objective",
+    "project_extension_settings": {
+      "discretization_nodes": [40, 80, 160, 320],
+      "minimum_holding_fraction_of_horizon": [0.0, 0.025, 0.10]
+    },
+    "instance_count": 48,
+    "method_ids": ["CIA_BNB", "CIA_MILP", "DPA", "GN_MIQP", "ISTO", "M01_MODULE"],
+    "timing_repeats_same_initialization": 10,
+    "planned_timing_solve_count": 2880,
+    "extra_reference": "direct_MINLP_small_instances",
+    "unsupported_structural_bounds": "disabled_and_reported",
+    "original_master_sequence_replication_separate": true,
+    "common_comparison_master_sequence_coverage_check": true,
+    "same_physical_switching_constraints": true,
+    "shared_forward_replay": true,
+    "same_replay_grid_integrator_and_switch_event_handling": true,
+    "certified_lower_bound_distinct_from_local_relaxation": true,
+    "software_and_licence_check_pending": true,
+    "problem_source_hashes": null
+  },
+  "missions": [
+    {"id": "M1", "duration_h": 2, "purpose": "multiphase_flight"},
+    {"id": "M2", "duration_h": 8, "purpose": "route_inspection"},
+    {"id": "M3", "duration_h": 24, "purpose": "persistent_observation"},
+    {"id": "M4", "duration_h": 80, "purpose": "long_endurance"}
+  ],
+  "mission_duration_definition": "ground_takeoff_start_to_landing_roll_end",
+  "mission_stages": ["takeoff_roll", "climb", "low_speed_high_lift", "cruise_and_route_change", "powered_descent", "approach", "flare", "landing_roll"],
+  "resource_cases": [
+    {"id": "C0", "battery_available_energy_factor": 1.0, "engine_available_power_factor": 1.0},
+    {"id": "C1", "battery_available_energy_factor": 0.8, "engine_available_power_factor": 1.0},
+    {"id": "C2", "battery_available_energy_factor": 1.0, "engine_available_power_factor": 0.9}
+  ],
+  "resource_factor_definition": "project_sensitivity_assumptions_applied_once_relative_to_frozen_nominal",
+  "main_comparison": {
+    "study": "P3",
+    "mission_ids": ["M1", "M2", "M3", "M4"],
+    "resource_ids": ["C0", "C1", "C2"],
+    "instance_count": 12,
+    "method_ids": ["B01", "B02", "B03", "B04", "B05", "B07", "B10", "B11", "B12", "M01"],
+    "independent_paired_seed_count": 30,
+    "evaluation_model": "low_order_mission",
+    "planned_optimization_run_count": 3600,
+    "all_infeasible_instance_reporting": "retain_feasibility_and_constraint_violation_results"
+  },
+  "codesign_structures": {
+    "study": "P2",
+    "representative_instances": ["M1_C0", "M2_C1", "M4_C0"],
+    "structures": ["fixed_baseline_control_tuning", "independent_subsystem_design", "sequential_design_then_control", "alternating_design_control", "simultaneous_design_control_mode"],
+    "common_tracking_response_requirement_pairs": 3,
+    "requirement_values": null,
+    "common_solver_backend": true,
+    "primary_objective": "energy_at_fixed_tracking_and_response_requirements",
+    "terminal_energy_reserve_constraints_shared": true,
+    "cumulative_cost_across_stages": true
+  },
+  "unseen_conditions": {
+    "study": "P4",
+    "heldout_task_count": 30,
+    "paired_parameter_realization_count": 100,
+    "joint_parameter_distribution": null,
+    "freeze_candidates_before_viewing_test_results": true,
+    "candidate_rules": ["energy_extreme", "fixed_augmented_achievement_scalarizing_function", "response_extreme"],
+    "design_and_control_parameters_frozen_at_test": true,
+    "hierarchical_analysis_over_runs_and_tasks": true,
+    "recovery_right_censoring_and_excitation_flags": true
+  },
+  "JSBSim_closed_loop_comparison": {
+    "study": "P4",
+    "instances": ["M1_C0", "M2_C1", "M4_C0"],
+    "method_ids": ["B01", "B02", "B03", "B04", "B05", "B07", "B10", "B11", "B12", "M01"],
+    "independent_paired_seed_count": 30,
+    "evaluation_model": "JSBSim_each_candidate_closed_loop",
+    "planned_optimization_run_count": 900,
+    "post_optimization_replay_is_separate": true,
+    "mix_low_order_and_closed_loop_rankings": false,
+    "group_specific_cost_calibration": true
+  },
+  "resolution_and_scale": {
+    "study": "P5",
+    "forward_integration_steps": "successive_halving_with_fixed_controls",
+    "dispatch_control_intervals": [24, 48, 96],
+    "populations": [28, 66, 120],
+    "three_objective_reference_direction_H": [6, 10, 14],
+    "holding_time_in_physical_seconds_fixed": true,
+    "change_integration_control_parameterization_and_population_separately": true,
+    "initial_relative_objective_convergence_threshold": 0.01,
+    "near_zero_absolute_scales": null,
+    "physical_feasibility_tolerances_fixed": true
+  },
+  "ablation": {
+    "study": "P6",
+    "instances": ["M1_C0", "M2_C1", "M4_C0"],
+    "versions": ["full", "without_valid_bounds", "without_adaptive_mode_refinement", "single_control_per_design", "fixed_inner_budget"],
+    "reuse_full_method_main_runs": true,
+    "cost_modules": ["design_search", "continuous_control", "mode_search", "bounds", "flight_integration"]
+  },
+  "budget": {
+    "primary": "common_wall_clock_with_all_overhead",
+    "cumulative_checkpoints_in_calibrated_eval_time_units": [256, 1024, 4096],
+    "checkpoints_share_same_run": true,
+    "seconds_per_unit_per_evaluation_group": null,
+    "calibration_precedes_formal_run_launch": true,
+    "all_relaxation_gradient_repair_failed_solve_training_warm_start_cost_charged": true,
+    "shared_tuning_budget": null,
+    "hardware_threads_cache_and_timing_policy_frozen": true
+  },
+  "statistics": {
+    "development_seed_count": 8,
+    "formal_optimization_seed_count": 30,
+    "timing_repeats_count": 10,
+    "seed_lists": null,
+    "confidence_level": 0.95,
+    "paired_analysis": true,
+    "multiple_comparison_correction": "Holm",
+    "separate_timing_search_and_task_variability": true
+  },
+  "appendix_checks": ["exact_small_model_bounds", "incorrect_pruning_count", "per_step_error_diagnostics"],
+  "execution_requirements": ["import_public_problem_definitions_and_hash_sources", "check_solver_availability_and_licences", "document_specialist_adaptations", "common_mixed_variable_and_mode_interface", "common_forward_replay", "freeze_tasks_constraints_normalization_HV_and_seeds", "validate_bounds_before_pruning", "calibrate_total_runtime_and_parallel_resource_requirements"],
+  "references": {
+    "R1": "10.1115/1.4064025",
+    "R2": "10.1016/j.automatica.2020.109325",
+    "R3": "10.1016/j.automatica.2023.110967",
+    "R4": "10.1016/j.jprocont.2025.103522",
+    "R5": "arXiv:2501.05158v1",
+    "R6": "10.1007/s10107-020-01533-x"
+  }
+}

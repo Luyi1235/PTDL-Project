@@ -1,0 +1,56 @@
+{
+  "created_at": "2026-10-06T17:50:33",
+  "dataset_version": "Ew_物理选点_网格修复_20261006",
+  "representative_anchor_count": 14,
+  "additional_valid_vspaero_solves": 86,
+  "failed_or_rejected_attempts": 4,
+  "attempts_for_new_designs": 90,
+  "target_definition": "median VSPAERO Ew for polar points with abs(CLiw) >= 0.15",
+  "geometry_mesh_policy": "Main_Wing/Horizontal_Tail/Vertical_Tail thin set; Fuselage thick set; reject mesh face warnings",
+  "wake_iterations": 30,
+  "runtime_s": 2123.894011800061,
+  "files": {
+    "doe40": "D:\\LDTP\\LDTP\\PTDL飞推控协同优化代码包\\气动代理模型数据\\VSPAERO_DOE基准样本_40点_Ew_物理选点_网格修复_20261006.csv",
+    "doe100": "D:\\LDTP\\LDTP\\PTDL飞推控协同优化代码包\\气动代理模型数据\\VSPAERO_DOE扩充样本_100点_Ew_物理选点_网格修复_20261006.csv",
+    "model40": "D:\\LDTP\\LDTP\\PTDL飞推控协同优化代码包\\气动代理模型数据\\气动代理模型_基准DOE40点_Ew_物理选点_网格修复_20261006.json",
+    "model100": "D:\\LDTP\\LDTP\\PTDL飞推控协同优化代码包\\气动代理模型数据\\气动代理模型_扩充DOE100点_Ew_物理选点_网格修复_20261006.json",
+    "metadata": "D:\\LDTP\\LDTP\\PTDL飞推控协同优化代码包\\气动代理模型数据\\VSPAERO_DOE40_100实算元数据_Ew_物理选点_网格修复_20261006.json",
+    "validation": "D:\\LDTP\\LDTP\\PTDL飞推控协同优化代码包\\气动代理模型数据\\VSPAERO_DOE代理模型留一验证_Ew_物理选点_网格修复_20261006.json"
+  },
+  "design_selection_policy": "ULTRA-span-matched geometric reference plus feasible H=6 nominal hybrid design, one-factor local sensitivity points, and feasible maximin space-filling points.",
+  "design_bounds": {
+    "wing_area_m2": [
+      22.0,
+      40.0
+    ],
+    "aspect_ratio": [
+      18.0,
+      31.0
+    ],
+    "taper_ratio": [
+      0.3,
+      0.7
+    ],
+    "sweep_deg": [
+      0.0,
+      8.0
+    ],
+    "tip_twist_deg": [
+      -3.0,
+      1.5
+    ],
+    "fuselage_length_m": [
+      7.5,
+      10.0
+    ],
+    "fuselage_diameter_m": [
+      0.65,
+      0.95
+    ]
+  },
+  "fixed_powertrain_context": {
+    "propeller_diameter_m": 2.256884301054812,
+    "payload_mass_kg": 110.04789221101224,
+    "hybrid_system_mass_kg": 78.08425552327873
+  }
+}

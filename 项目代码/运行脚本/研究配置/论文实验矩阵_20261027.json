@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "superseded_by": "论文实验矩阵_文献范式修订版_20261027.json",
+  "date": "2026-10-27",
+  "status": "designed_not_executed",
+  "artifact_kind": "research_protocol_manifest_not_production_runner_config",
+  "topic": "Multiobjective co-design with inexact control solves and discrete mode feasibility",
+  "production_changes": false,
+  "formal_execution_ready": false,
+  "model_freeze": {
+    "power_version": "1005-20261023",
+    "aero_model_sha256": null,
+    "task_profile_sha256": null,
+    "response_definition": "recovery-integral",
+    "primary_archive": "feasible_cross_generation_external_archive",
+    "normalization_reference": null,
+    "hypervolume_reference": null,
+    "holding_time_and_boundary_state_convention": null,
+    "ground_truth_scope": "subproblem_and_discretization_specific",
+    "prohibit_mixing_old_power_results": true
+  },
+  "design_requirements": {
+    "development_designs_with_at_least_four_feasible_modes": 3,
+    "min_modes_contributing_to_sampled_front": 2,
+    "lock_scenario_bank_before_algorithm_comparison": true,
+    "retain_infeasible_and_relaxation_false_positive_cases": true,
+    "holdout_task_profiles": true,
+    "single_source_of_response_delay": true,
+    "local_solver_value_is_certified_lower_bound": false,
+    "timeout_implies_physical_infeasibility": false,
+    "safe_pruning_requires_valid_bound_certificate": true
+  },
+  "methods": [
+    {"id": "B01", "name": "NSGA-II", "implementation": "existing"},
+    {"id": "B02", "name": "MOEA/D", "implementation": "existing"},
+    {"id": "B03", "name": "MOPSO", "implementation": "existing"},
+    {"id": "B04", "name": "Original hybrid", "implementation": "existing"},
+    {"id": "B05", "name": "PTDL coupling-guided", "implementation": "existing"},
+    {"id": "B06", "name": "Fixed inner budget", "implementation": "planned_adaptation"},
+    {"id": "B07", "name": "Adaptive inner accuracy", "implementation": "planned_adaptation", "references": [3, 4]},
+    {"id": "B08", "name": "Resource reachability plus fixed inner budget", "implementation": "planned_extension"},
+    {"id": "B09", "name": "Relaxation plus dwell-constrained mode recovery", "implementation": "planned_adaptation", "references": [6, 7]},
+    {"id": "B10", "name": "State-aware Gauss-Newton mode recovery", "implementation": "planned_adaptation", "references": [8]},
+    {"id": "B11", "name": "Dynamic-programming-inspired mode recovery", "implementation": "planned_adaptation", "references": [10]},
+    {"id": "M01", "name": "Proposed error-driven multiobjective co-design", "implementation": "proposed"}
+  ],
+  "levels": [
+    {
+      "id": "L0",
+      "model": "piecewise_linear_energy_and_discrete_modes",
+      "reference": "enumeration_plus_LP_or_certified_MILP",
+      "factors": {
+        "dispatch_blocks": [8, 12],
+        "minimum_holding_blocks": [1, 2],
+        "storage_case": ["tight", "intermediate", "ample"]
+      },
+      "factorial_case_count": 12,
+      "physical_case_values_locked": false,
+      "methods": ["B06", "B07", "B08", "B09", "B10", "B11", "M01"],
+      "reference_computation_charged_separately": true
+    },
+    {
+      "id": "L1",
+      "model": "nonlinear_hybrid_power_dynamics",
+      "reference": "best_known_multistart_plus_available_certificates",
+      "factors": {
+        "storage_case": ["tight", "intermediate"],
+        "engine_response_case": ["nominal", "slow"],
+        "holding_time_case": ["short", "medium", "long"]
+      },
+      "factorial_case_count": 12,
+      "dispatch_blocks": 8,
+      "physical_case_values_locked": false,
+      "methods": ["B06", "B07", "B08", "B09", "B10", "B11", "M01"],
+      "dynamics": ["battery_resistance", "engine_first_order_lag", "command_delay", "power_slew", "mode_holding_time"]
+    },
+    {
+      "id": "L2",
+      "model": "PTDL_three_objective_mission",
+      "cases": [
+        {"id": "mission_2h_nominal", "duration_h": 2, "disturbance": false},
+        {"id": "mission_2h_disturbed", "duration_h": 2, "disturbance": true},
+        {"id": "mission_8h_disturbed", "duration_h": 8, "disturbance": true},
+        {"id": "mission_80h", "duration_h": 80, "disturbance": false}
+      ],
+      "factorial_case_count": 4,
+      "methods": ["B01", "B02", "B03", "B04", "B05", "B07", "B10", "B11", "M01"],
+      "evaluation_groups": ["low_order_mission", "JSBSim_per_candidate_closed_loop"],
+      "pool_different_model_groups_for_ranking": false,
+      "mission_feasibility_presumed": false,
+      "all_infeasible_case_output": "feasibility_search_and_constraint_violation"
+    }
+  ],
+  "experiments": [
+    {"id": "E1", "question": "Impact of incomplete continuous control solves", "levels": ["L0", "L1"], "metrics": ["unresolved_to_feasible_count", "objective_error", "missed_sampled_front_points"]},
+    {"id": "E2", "question": "Impact of discrete mode relaxation and recovery", "levels": ["L0", "L1"], "metrics": ["relaxation_gap", "recovered_feasibility", "constraint_violation", "switch_count", "total_cost"]},
+    {"id": "E3", "question": "Correctness and tightness of bounds", "levels": ["L0"], "metrics": ["invalid_bound_count", "incorrect_pruning_count", "bound_width", "saved_solver_work"]},
+    {"id": "E4", "question": "Value of adaptive computation allocation", "levels": ["L0", "L1"], "metrics": ["anytime_HV", "time_to_first_feasible", "unresolved_fraction", "module_cost"]},
+    {"id": "E5", "question": "PTDL mission performance", "levels": ["L2"], "metrics": ["HV", "feasible_run_fraction", "mission_energy", "tracking_error", "response_objective", "recovery_time", "total_cost"]},
+    {"id": "E6", "question": "Scaling and failure regimes", "levels": ["L0", "L1", "L2"], "metrics": ["quality_vs_size", "cost_vs_size", "overhead_fraction"]}
+  ],
+  "ablations": ["without_certified_bounds", "without_adaptive_mode_refinement", "single_control_solution_per_design", "fixed_inner_budget"],
+  "budget": {
+    "primary": "calibrated_wall_clock_per_model_group",
+    "calibration": "fixed_case_bank_complete_evaluation_median",
+    "cumulative_checkpoints_in_calibration_time_units": [256, 1024, 4096],
+    "all_solver_and_training_overhead_charged": true,
+    "cache_policy_shared": true,
+    "timing_resources_isolated": true,
+    "seconds_per_calibration_unit": null
+  },
+  "statistics": {
+    "development_seed_count": 8,
+    "formal_seed_count": 30,
+    "seed_list_locked": false,
+    "paired_seeds_across_methods": true,
+    "independent_unit": "independent_seed_run_or_independent_task",
+    "confidence_level": 0.95,
+    "confidence_intervals": "paired_bootstrap_over_independent_runs",
+    "multiple_comparison_correction": "Holm",
+    "report": ["median", "interquartile_range", "paired_difference", "confidence_interval", "effect_size"]
+  },
+  "response_reporting": {
+    "paired_nominal_trajectory": true,
+    "recovery_time_separate_from_penalty": true,
+    "normalized_error_integral_separate": true,
+    "insufficient_excitation_flag": true,
+    "unrecovered_event_right_censoring": true,
+    "unrecovered_event_time_is_zero": false
+  },
+  "required_outputs": ["frozen_configuration", "source_hashes", "candidate_objectives", "constraint_residuals", "mode_sequence", "solver_status", "certificate_scope", "bound_history", "compute_ledger", "archive_history", "paired_response_trajectories"],
+  "execution_gates": [
+    "lock_load_profiles_physical_values_and_boundary_conventions",
+    "pass_multiple_feasible_mode_structure_check",
+    "implement_and_document_specialist_baselines",
+    "verify_L0_bounds_and_pruning_against_exact_reference",
+    "separate_L1_local_reference_from_global_certificates",
+    "freeze_model_hashes_objective_scales_HV_reference_and_seed_lists",
+    "calibrate_and_lock_compute_budget_before_formal_runs"
+  ]
+}

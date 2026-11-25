@@ -1,0 +1,30 @@
+{
+  "schema": "full_task_endurance_calibration_dynamic_cd0_v3",
+  "purpose": "Reusable full-task 72-hour inverse calibration for the reference model.",
+  "efficiency_scale": 1.098956298828125,
+  "baseline_duration_h": 71.98333333333333,
+  "propulsion_assumptions": {
+    "baseline_engine_power_kw": 120.0,
+    "engine_upgrade_kw_per_hybrid_kg": 0.0,
+    "engine_power_ceiling_kw": 120.0,
+    "engine_rating_multiplier": 1.2,
+    "motor_rating_multiplier": 1.2,
+    "battery_energy_multiplier": 1.2,
+    "engine_efficiency_power_fractions": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "engine_efficiency_values": [
+      0.22,
+      0.28,
+      0.315,
+      0.31,
+      0.29
+    ],
+    "hybrid_system_specific_energy_wh_per_kg": 220.0,
+    "motor_power_kw_per_hybrid_kg": 1.0
+  }
+}

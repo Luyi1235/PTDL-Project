@@ -1,0 +1,71 @@
+{
+  "feature_labels": [
+    "wing_area_m2",
+    "aspect_ratio",
+    "taper_ratio",
+    "sweep_deg",
+    "tip_twist_deg",
+    "fuselage_length_m",
+    "fuselage_diameter_m"
+  ],
+  "feature_mean": [
+    31.187276486536735,
+    24.330125709105705,
+    0.5088607076752406,
+    3.5635884917448477,
+    -0.6689293369971504,
+    8.677139707734314,
+    0.7780427375443222
+  ],
+  "feature_scale": [
+    5.874272719867834,
+    4.675573496381503,
+    0.1394003245112099,
+    3.0461950527386015,
+    1.5674053863403572,
+    0.8819588887971495,
+    0.11519665418483138
+  ],
+  "cl_alpha_coefficients": [
+    6.247657000625997,
+    0.0560425101051155,
+    0.07638788066660462,
+    0.004147591511866432,
+    0.00818731296434122,
+    0.0032684282039517377,
+    -0.0783537855758223,
+    -0.00013057340818471082,
+    0.012124054868904926,
+    -0.02406983593419777,
+    -0.0025247678207519016,
+    -0.0036115473695449265,
+    0.0008280902292640628
+  ],
+  "oswald_coefficients": [
+    0.7397662139884486,
+    0.042652643328242514,
+    -0.04718304638572221,
+    0.013322762434582127,
+    0.04042716472395178,
+    0.057206896771171085,
+    0.00463743456869212,
+    0.004270927554488853,
+    0.002994527726065343,
+    0.005457759404474218,
+    0.004898895977366716,
+    0.015232629098408126,
+    -0.0029427522972324256
+  ],
+  "baseline_cl_alpha_per_rad": 6.267873175448011,
+  "baseline_oswald_efficiency": 0.629986585738,
+  "ridge_lambda": 0.15,
+  "training_samples": 100,
+  "oswald_efficiency_bounds": [
+    0.45,
+    1.0
+  ],
+  "oswald_efficiency_definition": "median VSPAERO Ew for polar points with abs(CLiw) >= 0.15",
+  "model_note": "VSPAERO VLM corrects CL_alpha and wake-based Ew trends; calibrated component-build-up parasite drag remains separate.",
+  "dataset_version": "Ew_物理选点_网格修复_20261006",
+  "mesh_policy": "thin lifting surfaces; thick fuselage; reject face-mesh warnings"
+}
